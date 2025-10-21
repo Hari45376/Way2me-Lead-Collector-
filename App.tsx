@@ -1,11 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Lead, LeadStatus } from './types';
 import Header from './components/Header';
 import LeadForm from './components/LeadForm';
 import StatusPanel from './components/StatusPanel';
 
 const App: React.FC = () => {
-  const [leads, setLeads] = useState<Lead[]>([]);
+  const [leads, setLeads] = useState<Lead[]>(() => {
+    try {
+      const savedLeads = localStorage.getItem('bpoLeads');
+      if (savedLeads) {
+        const parsedLeads = JSON.parse(savedLeads) as Lead[];
+        // Convert timestamp strings back to Date objects
+        return parsedLeads.map(lead => ({
+          ...lead,
+          timestamp: new Date(lead.timestamp),
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to parse leads from localStorage", error);
+      return [];
+    }
+    return [];
+  });
+
   const [currentName, setCurrentName] = useState('');
   const [currentWhatsappNumber, setCurrentWhatsappNumber] = useState('');
   const [currentOccupation, setCurrentOccupation] = useState('');
@@ -15,6 +32,9 @@ const App: React.FC = () => {
   const [startDate, setStartDate] = useState<string>(today);
   const [endDate, setEndDate] = useState<string>(today);
 
+  useEffect(() => {
+    localStorage.setItem('bpoLeads', JSON.stringify(leads));
+  }, [leads]);
 
   const resetForm = () => {
     setCurrentName('');
