@@ -1,0 +1,5 @@
+{
+  "name": "BPO Lead Collector",
+  "description": "A lead collection tool for BPO teams with a glassy UI, allowing agents to capture lead details, manage their status, and export the data to a CSV file for spreadsheet use.",
+  "requestFramePermissions": []
+}
